@@ -55,7 +55,7 @@ class HttpRequest extends Readable {
   }
 
   _read (size) {
-    return this
+    
   }
 }
 
