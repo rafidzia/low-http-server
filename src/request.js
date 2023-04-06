@@ -54,9 +54,9 @@ class HttpRequest extends Readable {
     return this.req
   }
 
-//   _read (size) {
-//     return this.slice(0, size)
-//   }
+  _read (size) {
+    return this
+  }
 }
 
 module.exports = HttpRequest
