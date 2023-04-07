@@ -31,12 +31,15 @@ module.exports = (config = {}) => {
 
     reqWrapper.socket = resWrapper.socket
 
+    var temp = ""
+
     const method = reqWrapper.method
     if (method !== 'HEAD') { // 0http's low checks also that method !== 'GET', but many users would send request body with GET, unfortunately
       res.onData((bytes, isLast) => {
         const chunk = Buffer.from(bytes)
+        temp += chunk
         if (isLast) {
-          reqWrapper.push(chunk)
+          reqWrapper.push(temp)
           reqWrapper.push(null)
           if (!res.finished) {
             return handler(reqWrapper, resWrapper)
