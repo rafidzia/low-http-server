@@ -55,7 +55,11 @@ class HttpRequest extends Readable {
   }
 
   _read (size) {
-    return this
+    this.push(this.req.tempData)
+    this.req.tempData = ""
+    if(this.req.isLast){
+      this.push(null)
+    }
   }
 }
 

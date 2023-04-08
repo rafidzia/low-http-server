@@ -22,6 +22,8 @@ module.exports = (config = {}) => {
 
   const uServer = uWS[appType](config).any('/*', (res, req) => {
     res.finished = false
+    req.tempData = ''
+    req.isLast = false
 
     const reqWrapper = new HttpRequest(req)
     const resWrapper = new HttpResponse(res, reqWrapper)
@@ -35,21 +37,18 @@ module.exports = (config = {}) => {
     if (method !== 'HEAD') { // 0http's low checks also that method !== 'GET', but many users would send request body with GET, unfortunately
       res.onData((bytes, isLast) => {
         const chunk = Buffer.from(bytes)
+        req.tempData += chunk
         if (isLast) {
-          reqWrapper.push(chunk)
-          reqWrapper.push(null)
+          req.isLast = true
           if (!res.finished) {
             return handler(reqWrapper, resWrapper)
           }
-          return
         }
-
-        return reqWrapper.push(chunk)
       })
     } else if (!res.finished) {
       handler(reqWrapper, resWrapper)
     }
-  })
+  })  
 
   // uServer._date = new Date().toUTCString()
   // const timer = setInterval(() => (uServer._date = new Date().toUTCString()), 1000)
